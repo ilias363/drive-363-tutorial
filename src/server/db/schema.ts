@@ -1,7 +1,8 @@
+import "server-only";
+
 import {
   int,
   text,
-  singlestoreTable,
   index,
   singlestoreTableCreator,
   bigint,
