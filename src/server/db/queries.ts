@@ -2,6 +2,7 @@ import "server-only";
 
 import { db } from "~/server/db";
 import {
+  DB_FileType,
   files_table as filesSchema,
   folders_table as foldersSchema,
 } from "~/server/db/schema";
@@ -37,5 +38,21 @@ export const QUERIES = {
       currentId = folder[0]?.parent;
     }
     return parents;
+  },
+};
+
+export const MUTATIONS = {
+  createFile: async function (input: {
+    file: {
+      name: string;
+      size: number;
+      url: string;
+    };
+    userId: string;
+  }) {
+    return await db.insert(filesSchema).values({
+      ...input.file,
+      parent: 1,
+    });
   },
 };
