@@ -4,14 +4,40 @@ import { Upload } from "lucide-react";
 import { UploadButton } from "~/components/uploadthing";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
+import { toast } from "sonner";
+import { usePostHog } from "posthog-js/react";
 
 export default function CustomUploadButton(props: { currentFolderId: number }) {
   const navigate = useRouter();
 
+  const posthog = usePostHog();
+
   return (
     <UploadButton
       endpoint="driveUploader"
+      onUploadBegin={() => {
+        posthog.capture("upload_begin");
+        toast.loading("Upload started", {
+          description: "Your files are being uploaded",
+          id: "upload-begin",
+        });
+      }}
+      onUploadAborted={() => {
+        toast.dismiss("upload-begin");
+        toast.error("Upload aborted");
+      }}
+      onUploadError={(error) => {
+        posthog.capture("upload_error", { error });
+        toast.dismiss("upload-begin");
+        console.log(error);
+        toast.error("Upload failed", {
+          description: "Check the console for more info",
+        });
+      }}
       onClientUploadComplete={() => {
+        posthog.capture("upload_complete");
+        toast.dismiss("upload-begin");
+        toast.success("Upload complete!");
         navigate.refresh();
       }}
       input={{

@@ -49,16 +49,16 @@ export default function DriveContents(props: {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-700">
-                <th className="w-1/2 px-6 py-4 text-left text-gray-400">
+                <th className="w-5/12 px-6 py-4 text-left text-gray-400">
                   Name
                 </th>
-                <th className="w-1/6 px-6 py-4 text-center text-gray-400">
-                  Type
+                <th className="w-3/12 px-6 py-4 text-center text-gray-400">
+                  Created
                 </th>
-                <th className="w-1/4 px-6 py-4 text-center text-gray-400">
+                <th className="w-2/12 px-6 py-4 text-center text-gray-400">
                   Size
                 </th>
-                <th className="w-1/12 px-6 py-4 text-center text-gray-400">
+                <th className="w-2/12 px-6 py-4 text-center text-gray-400">
                   Actions
                 </th>
               </tr>
