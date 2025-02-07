@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.11.1",
+    "@clerk/themes": "^2.2.16",
     "@libsql/client": "^0.10.0",
     "@radix-ui/react-slot": "^1.1.1",
     "@t3-oss/env-nextjs": "^0.10.1",
