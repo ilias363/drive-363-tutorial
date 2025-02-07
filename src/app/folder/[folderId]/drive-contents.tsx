@@ -96,7 +96,14 @@ export default function DriveContents(props: {
           content={{
             button({ ready, isUploading }) {
               if (isUploading) return;
-              if (ready) return "Upload Files";
+              // if (ready) return "Upload Files";
+              if (ready)
+                return (
+                  <div className="flex flex-row items-center gap-2">
+                    <Upload className="h-5 w-5" />
+                    Upload Files
+                  </div>
+                );
               return "Initializing...";
             },
             allowedContent({ ready, isUploading }) {
