@@ -50,7 +50,7 @@ export function FolderRow(props: {
       <div className="grid grid-cols-12 items-center gap-4">
         <div className="col-span-6 flex items-center">
           <Link
-            href={`/f/${folder.id}`}
+            href={`/folder/${folder.id}`}
             className="flex items-center text-gray-100 hover:text-blue-400"
           >
             <FolderIcon className="mr-3" size={20} />

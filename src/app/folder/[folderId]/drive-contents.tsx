@@ -1,7 +1,7 @@
 "use client";
 
 import { Upload, ChevronRight } from "lucide-react";
-import { FileRow, FolderRow } from "./file-row";
+import { FileRow, FolderRow } from "./file-folder-row";
 import type { files_table, folders_table } from "~/server/db/schema";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
@@ -21,20 +21,25 @@ export default function DriveContents(props: {
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center">
-            <Link href={"/f/1"} className="mr-2 text-gray-300 hover:text-white">
+            <Link
+              href={`/folder/${props.parents.find((parent) => parent.parent === null)?.id}`}
+              className="text-gray-300 hover:text-white"
+            >
               My Drive
             </Link>
-            {props.parents.map((folder, index) => (
-              <div key={folder.id} className="flex items-center">
-                <ChevronRight className="mx-2 text-gray-500" size={16} />
-                <Link
-                  href={`/f/${folder.id}`}
-                  className="text-gray-300 hover:text-white"
-                >
-                  {folder.name}
-                </Link>
-              </div>
-            ))}
+            {props.parents
+              .filter((parent) => parent.parent)
+              .map((folder) => (
+                <div key={folder.id} className="flex items-center">
+                  <ChevronRight className="mx-2 text-gray-500" size={16} />
+                  <Link
+                    href={`/folder/${folder.id}`}
+                    className="text-gray-300 hover:text-white"
+                  >
+                    {folder.name}
+                  </Link>
+                </div>
+              ))}
           </div>
           <div>
             <SignedOut>

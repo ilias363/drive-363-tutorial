@@ -27,7 +27,7 @@ export async function deleteFile(fileId: number) {
   }
 
   const utapiResult = await utApi.deleteFiles([
-    file.url.replace("https://utfs.io/f/", ""),
+    file.url.replace("https://utfs.io/folder/", ""),
   ]);
 
   console.log(utapiResult);

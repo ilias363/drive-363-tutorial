@@ -22,7 +22,7 @@ export default async function DrivePage() {
 
           const rootFolderId = await MUTATIONS.onboardUser(session.userId);
 
-          return redirect(`/f/${rootFolderId}`);
+          return redirect(`/folder/${rootFolderId}`);
         }}
       >
         <Button type="submit">Create New Drive</Button>
@@ -30,5 +30,5 @@ export default async function DrivePage() {
     );
   }
 
-  return redirect(`/f/${rootFolder.id}`);
+  return redirect(`/folder/${rootFolder.id}`);
 }
