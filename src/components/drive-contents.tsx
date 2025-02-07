@@ -1,12 +1,9 @@
-"use client";
-
-import { Upload, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { FileRow, FolderRow } from "./file-folder-row";
 import type { files_table, folders_table } from "~/server/db/schema";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { UploadButton } from "~/components/uploadthing";
-import { useRouter } from "next/navigation";
+import CustomUploadButton from "./custom-upload-button";
 
 export default function DriveContents(props: {
   files: (typeof files_table.$inferSelect)[];
@@ -14,8 +11,6 @@ export default function DriveContents(props: {
   parents: (typeof folders_table.$inferSelect)[];
   currentFolderId: number;
 }) {
-  const navigate = useRouter();
-
   return (
     <div className="min-h-screen p-8 text-gray-100">
       <div className="mx-auto max-w-6xl">
@@ -78,40 +73,7 @@ export default function DriveContents(props: {
             </tbody>
           </table>
         </div>
-
-        <UploadButton
-          endpoint="driveUploader"
-          onClientUploadComplete={() => {
-            navigate.refresh();
-          }}
-          input={{
-            folderId: props.currentFolderId,
-          }}
-          appearance={{
-            button:
-              "focus-within:ring-0 ut-readying:bg-neutral-800 ut-ready:bg-neutral-800 ut-uploading:bg-neutral-800 after:bg-neutral-950 ut-uploading:border-2 ut-uploading:border-neutral-600 ut-uploading:cursor-not-allowed text-md font-medium",
-            container: "p-2 my-2",
-            allowedContent: "flex items-center justify-center text-white",
-          }}
-          content={{
-            button({ ready, isUploading }) {
-              if (isUploading) return;
-              // if (ready) return "Upload Files";
-              if (ready)
-                return (
-                  <div className="flex flex-row items-center gap-2">
-                    <Upload className="h-5 w-5" />
-                    Upload Files
-                  </div>
-                );
-              return "Initializing...";
-            },
-            allowedContent({ ready, isUploading }) {
-              if (!ready) return "Initializing...";
-              if (isUploading) return "Uploading files...";
-            },
-          }}
-        />
+        <CustomUploadButton currentFolderId={props.currentFolderId} />
       </div>
     </div>
   );

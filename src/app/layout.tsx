@@ -6,7 +6,7 @@ import { PostHogProvider } from "./_providers/posthog-provider";
 import { dark } from "@clerk/themes";
 
 export const metadata: Metadata = {
-  title: "Drive363 Tutorial",
+  title: "Drive363",
   description: "The worst Google Drive clone",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
