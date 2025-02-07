@@ -17,7 +17,7 @@ export default function DriveContents(props: {
   const navigate = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8 text-gray-100">
+    <div className="min-h-screen p-8 text-gray-100">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center">
@@ -50,24 +50,35 @@ export default function DriveContents(props: {
             </SignedIn>
           </div>
         </div>
-        <div className="rounded-lg bg-gray-800 shadow-xl">
-          <div className="border-b border-gray-700 px-6 py-4">
-            <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-400">
-              <div className="col-span-6">Name</div>
-              <div className="col-span-2">Type</div>
-              <div className="col-span-3">Size</div>
-              <div className="col-span-1"></div>
-            </div>
-          </div>
-          <ul>
-            {props.folders.map((folder) => (
-              <FolderRow key={folder.id} folder={folder} />
-            ))}
-            {props.files.map((file) => (
-              <FileRow key={file.id} file={file} />
-            ))}
-          </ul>
+        <div className="rounded-lg bg-neutral-900/50 shadow-xl">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-700">
+                <th className="w-1/2 px-6 py-4 text-left text-gray-400">
+                  Name
+                </th>
+                <th className="w-1/6 px-6 py-4 text-center text-gray-400">
+                  Type
+                </th>
+                <th className="w-1/4 px-6 py-4 text-center text-gray-400">
+                  Size
+                </th>
+                <th className="w-1/12 px-6 py-4 text-center text-gray-400">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {props.folders.map((folder) => (
+                <FolderRow key={folder.id} folder={folder} />
+              ))}
+              {props.files.map((file) => (
+                <FileRow key={file.id} file={file} />
+              ))}
+            </tbody>
+          </table>
         </div>
+
         <UploadButton
           endpoint="driveUploader"
           onClientUploadComplete={() => {
@@ -75,6 +86,23 @@ export default function DriveContents(props: {
           }}
           input={{
             folderId: props.currentFolderId,
+          }}
+          appearance={{
+            button:
+              "focus-within:ring-0 ut-readying:bg-neutral-800 ut-ready:bg-neutral-800 ut-uploading:bg-neutral-800 after:bg-neutral-950 ut-uploading:border-2 ut-uploading:border-neutral-600 ut-uploading:cursor-not-allowed text-md font-medium",
+            container: "p-2 my-2",
+            allowedContent: "flex items-center justify-center text-white",
+          }}
+          content={{
+            button({ ready, isUploading }) {
+              if (isUploading) return;
+              if (ready) return "Upload Files";
+              return "Initializing...";
+            },
+            allowedContent({ ready, isUploading }) {
+              if (!ready) return "Initializing...";
+              if (isUploading) return "Uploading files...";
+            },
           }}
         />
       </div>

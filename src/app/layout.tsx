@@ -21,7 +21,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en" className={`${GeistSans.variable}`}>
-        <body>
+        <body className="bg-gradient-to-br from-black via-neutral-900 to-neutral-800">
           <PostHogProvider>{children}</PostHogProvider>
         </body>
       </html>
