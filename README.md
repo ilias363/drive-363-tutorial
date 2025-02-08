@@ -19,16 +19,20 @@ following along with https://youtu.be/c-hKSbzooAg?si=AYmCZffdslAQiRDu
 
 ### Gray out a row while it's being deleted
 
-### Toasts!
+### Folder creations
+
+Make a server action that takes a name and parentId, and creates a folder with that name and parentId (don't forget to set the ownerId).
 
 ### Folder deletions
 
 Make sure you fetch all of the folders that have it as a parent, and their children too
 
-### Folder creations
+### Folder and file renames
 
-Make a server action that takes a name and parentId, and creates a folder with that name and parentId (don't forget to set the ownerId).
+### move Folder and file
 
 ### Access control
 
 Check if user is owner before showing the folder page.
+
+### Multiple selection (for delete and move)
