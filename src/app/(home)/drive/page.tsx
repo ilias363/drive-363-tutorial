@@ -25,7 +25,13 @@ export default async function DrivePage() {
           return redirect(`/folder/${rootFolderId}`);
         }}
       >
-        <Button type="submit">Create New Drive</Button>
+        <Button
+          type="submit"
+          size="lg"
+          className="border border-neutral-700 bg-neutral-800 text-white transition-colors hover:bg-neutral-700"
+        >
+          Create New Drive
+        </Button>
       </form>
     );
   }
