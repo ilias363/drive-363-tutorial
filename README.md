@@ -15,8 +15,6 @@ following along with https://youtu.be/c-hKSbzooAg?si=AYmCZffdslAQiRDu
 
 ## Fun follow ups
 
-### Add file keys to the db for uploadthing deletion
-
 ### Gray out a row while it's being deleted
 
 ### Folder creations
@@ -30,9 +28,5 @@ Make sure you fetch all of the folders that have it as a parent, and their child
 ### Folder and file renames
 
 ### move Folder and file
-
-### Access control
-
-Check if user is owner before showing the folder page.
 
 ### Multiple selection (for delete and move)
