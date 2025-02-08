@@ -1,6 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { Button } from "~/components/ui/button";
+import { redirectToDrive } from "~/server/actions";
 
 export default function HomePage() {
   return (
@@ -11,19 +10,7 @@ export default function HomePage() {
       <p className="mx-auto mb-8 max-w-md text-xl text-neutral-400 md:text-2xl">
         Secure, fast, and easy file storage for the modern web
       </p>
-      <form
-        action={async () => {
-          "use server";
-
-          const session = await auth();
-
-          if (!session.userId) {
-            return redirect("/sign-in");
-          }
-
-          return redirect("/drive");
-        }}
-      >
+      <form action={redirectToDrive}>
         <Button
           size="lg"
           type="submit"

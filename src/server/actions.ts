@@ -6,9 +6,10 @@ import { auth } from "@clerk/nextjs/server";
 import { files_table } from "./db/schema";
 import { UTApi } from "uploadthing/server";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { MUTATIONS } from "./db/queries";
 
 const utApi = new UTApi();
-
 export async function deleteFile(fileId: number) {
   const session = await auth();
   if (!session.userId) {
@@ -26,9 +27,7 @@ export async function deleteFile(fileId: number) {
     throw new Error("File not found");
   }
 
-  const utapiResult = await utApi.deleteFiles([
-    file.url.replace("https://utfs.io/folder/", ""),
-  ]);
+  const utapiResult = await utApi.deleteFiles([file.utKey]);
 
   console.log(utapiResult);
 
@@ -43,4 +42,28 @@ export async function deleteFile(fileId: number) {
   c.set("force-refresh", JSON.stringify(Math.random()));
 
   return { success: true };
+}
+
+export async function redirectToDrive() {
+  "use server";
+
+  const session = await auth();
+
+  if (!session.userId) {
+    return redirect("/sign-in");
+  }
+
+  return redirect("/drive");
+}
+
+export async function createNewDrive() {
+  "use server";
+
+  const session = await auth();
+
+  if (!session.userId) return redirect("/sign-in");
+
+  const rootFolderId = await MUTATIONS.onboardUser(session.userId);
+
+  return redirect(`/folder/${rootFolderId}`);
 }

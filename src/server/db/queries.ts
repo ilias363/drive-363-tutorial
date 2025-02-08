@@ -15,6 +15,7 @@ export const QUERIES = {
       .where(eq(foldersSchema.parent, folderId))
       .orderBy(foldersSchema.id);
   },
+
   getFiles: function (folderId: number) {
     return db
       .select()
@@ -22,6 +23,7 @@ export const QUERIES = {
       .where(eq(filesSchema.parent, folderId))
       .orderBy(filesSchema.id);
   },
+
   getAllParentsForFolder: async function (folderId: number) {
     const parents = [];
 
@@ -40,6 +42,7 @@ export const QUERIES = {
     }
     return parents;
   },
+
   getFolderById: async function (folderId: number) {
     const folder = await db
       .select()
@@ -47,6 +50,7 @@ export const QUERIES = {
       .where(eq(foldersSchema.id, folderId));
     return folder[0];
   },
+
   getRootFolerForUser: async function (userId: string) {
     const folder = await db
       .select()
@@ -64,6 +68,7 @@ export const MUTATIONS = {
       name: string;
       size: number;
       url: string;
+      utKey: string;
       parent: number;
     };
     userId: string;
@@ -73,6 +78,7 @@ export const MUTATIONS = {
       ownerId: input.userId,
     });
   },
+
   onboardUser: async function (userId: string) {
     const rootFolder = await db
       .insert(foldersSchema)
@@ -92,7 +98,7 @@ export const MUTATIONS = {
         ownerId: userId,
       },
       {
-        name: "Shared",
+        name: "Images",
         parent: rootFolderId,
         ownerId: userId,
       },
