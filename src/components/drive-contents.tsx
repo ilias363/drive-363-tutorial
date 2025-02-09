@@ -4,6 +4,7 @@ import type { files_table, folders_table } from "~/server/db/schema";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import CustomUploadButton from "./custom-upload-button";
+import CreateFolderButton from "./create-folder-button";
 
 export default function DriveContents(props: {
   files: (typeof files_table.$inferSelect)[];
@@ -12,10 +13,22 @@ export default function DriveContents(props: {
   currentFolderId: number;
 }) {
   return (
-    <div className="min-h-screen p-8 text-gray-100">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center">
+    <div className="flex min-h-screen flex-row items-start justify-center gap-6 pl-2 pt-6 text-gray-100">
+      <nav className="flex h-[94vh] min-w-[12vw] flex-col items-center justify-between rounded-lg border border-l-0 border-gray-600 bg-neutral-900 px-4 py-2 shadow-xl">
+        <div className="mt-2 flex flex-col items-start gap-2">
+          <CreateFolderButton
+            parent={props.currentFolderId}
+            userId={props.parents[0]!.ownerId}
+          />
+        </div>
+        <div className="my-4">
+          <CustomUploadButton currentFolderId={props.currentFolderId} />
+        </div>
+      </nav>
+
+      <div className="mx-auto max-h-[94vh] flex-1 overflow-y-auto pr-8">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center pl-4">
             <Link
               href={`/folder/${props.parents.find((parent) => parent.parent === null)?.id}`}
               className="text-gray-300 hover:text-white"
@@ -73,7 +86,6 @@ export default function DriveContents(props: {
             </tbody>
           </table>
         </div>
-        <CustomUploadButton currentFolderId={props.currentFolderId} />
       </div>
     </div>
   );

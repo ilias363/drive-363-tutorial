@@ -63,6 +63,19 @@ export const QUERIES = {
 };
 
 export const MUTATIONS = {
+  createFolder: async function (input: {
+    folder: {
+      name: string;
+      parent: number;
+    };
+    userId: string;
+  }) {
+    return await db.insert(foldersSchema).values({
+      ...input.folder,
+      ownerId: input.userId,
+    });
+  },
+
   createFile: async function (input: {
     file: {
       name: string;
@@ -80,6 +93,12 @@ export const MUTATIONS = {
   },
 
   onboardUser: async function (userId: string) {
+    const existingRootFolder = await QUERIES.getRootFolerForUser(userId);
+
+    if (existingRootFolder) {
+      return existingRootFolder.id;
+    }
+
     const rootFolder = await db
       .insert(foldersSchema)
       .values({

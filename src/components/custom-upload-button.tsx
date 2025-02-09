@@ -46,9 +46,8 @@ export default function CustomUploadButton(props: { currentFolderId: number }) {
       config={{ cn: twMerge }}
       appearance={{
         button:
-          "focus-within:ring-offset-0 focus-within:ring-2 focus-within:ring-neutral-600 ut-readying:bg-neutral-800 ut-ready:bg-neutral-800 ut-uploading:bg-neutral-800 after:bg-neutral-950 ut-uploading:border-2 ut-uploading:border-neutral-600 ut-uploading:cursor-not-allowed text-md font-medium",
-        container: "p-2 my-2",
-
+          "focus-within:ring-offset-0 focus-within:ring-2 focus-within:ring-neutral-600 ut-readying:bg-neutral-800 ut-ready:bg-neutral-800 ut-ready:hover:bg-neutral-700 ut-uploading:bg-neutral-800 after:bg-neutral-950 ut-uploading:border-2 ut-uploading:border-neutral-600 ut-uploading:cursor-not-allowed text-md font-medium",
+        container: "",
         allowedContent: "flex items-center justify-center text-white",
       }}
       content={{

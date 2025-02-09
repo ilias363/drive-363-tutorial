@@ -2,10 +2,19 @@ import { ChevronRight } from "lucide-react";
 
 export default function FolderLoading() {
   return (
-    <div className="min-h-screen p-8 text-gray-100">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center">
+    <div className="flex min-h-screen flex-row items-start justify-center gap-6 pl-2 pr-8 pt-6 text-gray-100">
+      <nav className="flex h-[94vh] min-w-[12vw] flex-col items-center justify-between rounded-lg bg-neutral-900 px-4 py-2 shadow-xl">
+        <div className="mt-2 flex flex-col items-start gap-2">
+          <div className="h-10 w-[10vw] animate-pulse rounded bg-gray-700" />
+        </div>
+        <div className="my-4">
+          <div className="h-10 w-[10vw] animate-pulse rounded bg-gray-700" />
+        </div>
+      </nav>
+
+      <div className="mx-auto flex-1">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center pl-4">
             <div className="h-4 w-20 animate-pulse rounded bg-gray-700" />
             <ChevronRight size={16} className="mx-2 text-gray-500" />
             <div className="h-4 w-24 animate-pulse rounded bg-gray-700" />
@@ -60,9 +69,6 @@ export default function FolderLoading() {
               ))}
             </tbody>
           </table>
-        </div>
-        <div className="flex w-full items-center justify-center">
-          <div className="my-2 h-10 w-32 animate-pulse rounded bg-gray-700 p-2" />
         </div>
       </div>
     </div>
