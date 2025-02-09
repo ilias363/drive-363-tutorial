@@ -15,19 +15,31 @@ export default function CustomUploadButton(props: { currentFolderId: number }) {
   return (
     <UploadButton
       endpoint="driveUploader"
+      onBeforeUploadBegin={(files) => {
+        toast.loading("Preparing files...", {
+          description: "Preparing files for upload",
+          id: "upload-prepare",
+          duration: 100000,
+        });
+        return files;
+      }}
       onUploadBegin={() => {
         posthog.capture("upload_begin");
+        toast.dismiss("upload-prepare");
         toast.loading("Upload started", {
           description: "Your files are being uploaded",
           id: "upload-begin",
+          duration: 100000,
         });
       }}
       onUploadAborted={() => {
+        toast.dismiss("upload-prepare");
         toast.dismiss("upload-begin");
         toast.error("Upload aborted");
       }}
       onUploadError={(error) => {
         posthog.capture("upload_error", { error });
+        toast.dismiss("upload-prepare");
         toast.dismiss("upload-begin");
         console.log(error);
         toast.error("Upload failed", {
@@ -37,7 +49,7 @@ export default function CustomUploadButton(props: { currentFolderId: number }) {
       onClientUploadComplete={() => {
         posthog.capture("upload_complete");
         toast.dismiss("upload-begin");
-        toast.success("Upload complete!");
+        toast.success("Upload completed!");
         navigate.refresh();
       }}
       input={{

@@ -17,14 +17,6 @@ following along with https://youtu.be/c-hKSbzooAg?si=AYmCZffdslAQiRDu
 
 ### Gray out a row while it's being deleted
 
-### Folder creations
-
-Make a server action that takes a name and parentId, and creates a folder with that name and parentId (don't forget to set the ownerId).
-
-### Folder deletions
-
-Make sure you fetch all of the folders that have it as a parent, and their children too
-
 ### Folder and file renames
 
 ### move Folder and file

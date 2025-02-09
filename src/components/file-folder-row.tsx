@@ -3,7 +3,7 @@
 import { Folder as FolderIcon, FileIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { deleteFile } from "~/server/actions";
+import { deleteFile, deleteFolder } from "~/server/actions";
 import type { files_table, folders_table } from "~/server/db/schema";
 import { toast } from "sonner";
 
@@ -35,16 +35,23 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
         <Button
           variant="ghost"
           onClick={async () => {
-            toast.loading("Deleting file...", {
-              id: "delete-loading",
+            const fileName =
+              file.name.length > 15
+                ? file.name.slice(0, 15) + "..."
+                : file.name;
+            const toastId = "file-delete-loading" + file.id;
+
+            toast.loading('Deleting file "' + fileName + '"', {
+              id: toastId,
             });
+
             try {
               await deleteFile(file.id);
-              toast.dismiss("delete-loading");
-              toast.success("File deleted successfully");
+              toast.dismiss(toastId);
+              toast.success('File "' + fileName + '" deleted successfully');
             } catch (error) {
-              toast.dismiss("delete-loading");
-              toast.error("Failed to delete file", {
+              toast.dismiss(toastId);
+              toast.error('Failed to delete file "' + fileName + '"', {
                 description:
                   error instanceof Error ? error.message : "An error occurred",
               });
@@ -84,7 +91,37 @@ export function FolderRow(props: {
         })}
       </td>
       <td className="px-6 py-4 text-center text-gray-400">--</td>
-      <td className="px-6 py-4 text-center text-gray-400">--</td>
+      <td className="px-6 py-4 text-center text-gray-400">
+        <Button
+          variant="ghost"
+          onClick={async () => {
+            const folderName =
+              folder.name.length > 15
+                ? folder.name.slice(0, 15) + "..."
+                : folder.name;
+            const toastId = "folder-delete-loading" + folder.id;
+
+            toast.loading('Deleting folder "' + folderName + '"', {
+              id: toastId,
+            });
+
+            try {
+              await deleteFolder(folder.id);
+              toast.dismiss(toastId);
+              toast.success('Folder "' + folderName + '" deleted successfully');
+            } catch (error) {
+              toast.dismiss(toastId);
+              toast.error('Failed to delete folder "' + folderName + '"', {
+                description:
+                  error instanceof Error ? error.message : "An error occurred",
+              });
+            }
+          }}
+          aria-label="Delete folder"
+        >
+          <Trash2Icon size={20} />
+        </Button>
+      </td>
     </tr>
   );
 }
