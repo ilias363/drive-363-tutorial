@@ -182,3 +182,23 @@ export async function createFolder(input: {
 
   return { success: true };
 }
+
+export async function renameFolder(folderId: number, newName: string) {
+  await MUTATIONS.renameFolder(folderId, newName);
+
+  const c = await cookies();
+
+  c.set("force-refresh", JSON.stringify(Math.random()));
+
+  return { success: true };
+}
+
+export async function renameFile(fileId: number, newName: string) {
+  await MUTATIONS.renameFile(fileId, newName);
+
+  const c = await cookies();
+
+  c.set("force-refresh", JSON.stringify(Math.random()));
+
+  return { success: true };
+}

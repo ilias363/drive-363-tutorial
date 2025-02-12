@@ -34,19 +34,23 @@ export default function CreateFolderButton(props: {
         <form
           onSubmit={() => setOpen(false)}
           action={async (formData) => {
-            const folderName = formData.get("folderName") as string | null;
-            const toastId = folderName
-              ? `create-folder-${folderName}`
-              : "create-folder-unknown";
+            const folderName = formData.get("folderName") as string;
+            const toastId = `create-folder-${folderName}`;
 
-            toast.loading("Creating folder " + (folderName ?? "") + "...", {
-              id: toastId,
-            });
-            await createFolder({ formData, ...props });
-            toast.dismiss(toastId);
-            toast.success(
-              "Folder " + (folderName ?? "-") + " created successfully",
-            );
+            try {
+              toast.loading(`Creating folder "${folderName}"...`, {
+                id: toastId,
+              });
+              await createFolder({ formData, ...props });
+              toast.dismiss(toastId);
+              toast.success(`Folder "${folderName}" created successfully`);
+            } catch (error) {
+              toast.dismiss(toastId);
+              toast.error(`Failed to create folder "${folderName}"`, {
+                description:
+                  error instanceof Error ? error.message : "An error occurred",
+              });
+            }
           }}
         >
           <DialogHeader>
@@ -61,6 +65,7 @@ export default function CreateFolderButton(props: {
               name="folderName"
               placeholder="Enter folder name"
               className="col-span-3"
+              maxLength={35}
               required
             />
           </div>

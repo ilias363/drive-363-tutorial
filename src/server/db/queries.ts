@@ -130,4 +130,18 @@ export const MUTATIONS = {
 
     return rootFolderId;
   },
+
+  renameFolder: async function (folderId: number, newName: string) {
+    return await db
+      .update(foldersSchema)
+      .set({ name: newName })
+      .where(eq(foldersSchema.id, folderId));
+  },
+
+  renameFile: async function (fileId: number, newName: string) {
+    return await db
+      .update(filesSchema)
+      .set({ name: newName })
+      .where(eq(filesSchema.id, fileId));
+  },
 };
