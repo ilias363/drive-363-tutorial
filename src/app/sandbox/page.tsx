@@ -1,7 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { db } from "~/server/db";
 import { MUTATIONS, QUERIES } from "~/server/db/queries";
-import { folders_table } from "~/server/db/schema";
 
 export default function SandboxPage() {
   return (

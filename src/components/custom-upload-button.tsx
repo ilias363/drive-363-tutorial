@@ -12,35 +12,37 @@ export default function CustomUploadButton(props: { currentFolderId: number }) {
 
   const posthog = usePostHog();
 
+  const randomKey = Math.random();
+
   return (
     <UploadButton
       endpoint="driveUploader"
       onBeforeUploadBegin={(files) => {
         toast.loading("Preparing files...", {
           description: "Preparing files for upload",
-          id: "upload-prepare",
+          id: "upload-prepare-" + randomKey,
           duration: 100000,
         });
         return files;
       }}
       onUploadBegin={() => {
         posthog.capture("upload_begin");
-        toast.dismiss("upload-prepare");
+        toast.dismiss("upload-prepare-" + randomKey);
         toast.loading("Upload started", {
           description: "Your files are being uploaded",
-          id: "upload-begin",
+          id: "upload-begin-" + randomKey,
           duration: 100000,
         });
       }}
       onUploadAborted={() => {
-        toast.dismiss("upload-prepare");
-        toast.dismiss("upload-begin");
+        toast.dismiss("upload-prepare-" + randomKey);
+        toast.dismiss("upload-begin-" + randomKey);
         toast.error("Upload aborted");
       }}
       onUploadError={(error) => {
         posthog.capture("upload_error", { error });
-        toast.dismiss("upload-prepare");
-        toast.dismiss("upload-begin");
+        toast.dismiss("upload-prepare-" + randomKey);
+        toast.dismiss("upload-begin-" + randomKey);
         console.log(error);
         toast.error("Upload failed", {
           description: "Check the console for more info",
@@ -48,7 +50,8 @@ export default function CustomUploadButton(props: { currentFolderId: number }) {
       }}
       onClientUploadComplete={() => {
         posthog.capture("upload_complete");
-        toast.dismiss("upload-begin");
+        toast.dismiss("upload-prepare-" + randomKey);
+        toast.dismiss("upload-begin-" + randomKey);
         toast.success("Upload completed!");
         navigate.refresh();
       }}

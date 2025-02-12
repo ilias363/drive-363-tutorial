@@ -15,8 +15,6 @@ following along with https://youtu.be/c-hKSbzooAg?si=AYmCZffdslAQiRDu
 
 ## Fun follow ups
 
-### Gray out a row while it's being deleted
-
 ### Folder and file renames
 
 ### move Folder and file

@@ -34,12 +34,19 @@ export default function CreateFolderButton(props: {
         <form
           onSubmit={() => setOpen(false)}
           action={async (formData) => {
-            toast.loading("Creating folder...", {
-              id: "create-folder",
+            const folderName = formData.get("folderName") as string | null;
+            const toastId = folderName
+              ? `create-folder-${folderName}`
+              : "create-folder-unknown";
+
+            toast.loading("Creating folder " + (folderName ?? "") + "...", {
+              id: toastId,
             });
             await createFolder({ formData, ...props });
-            toast.dismiss("create-folder");
-            toast.success("Folder created successfully");
+            toast.dismiss(toastId);
+            toast.success(
+              "Folder " + (folderName ?? "-") + " created successfully",
+            );
           }}
         >
           <DialogHeader>
