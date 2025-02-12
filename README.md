@@ -1,22 +1,3 @@
 # Drive363 Tutorial
 
-following along with https://youtu.be/c-hKSbzooAg?si=AYmCZffdslAQiRDu
-
-## TODO
-
-- [x] Set up database and data model
-- [x] Move folder open state to URL
-- [x] Add auth
-- [x] Add file uploading
-- [x] Add analytics
-- [x] Make sure sort order is consistent
-- [x] Add delete
-- [x] Real homepage + onboarding
-
-## Fun follow ups
-
-### Folder and file renames
-
-### move Folder and file
-
-### Multiple selection (for delete and move)
+Following along with [this tutorial](https://youtu.be/c-hKSbzooAg?si=AYmCZffdslAQiRDu) until commit [yt tutorial end](https://github.com/ilias363/drive-363-tutorial/commit/6b1453f0e97ee2df2d7b7784b54961842cd07122)
