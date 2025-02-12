@@ -3,7 +3,7 @@
 import { Folder as FolderIcon, FileIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { deleteFile, deleteFolder } from "~/server/actions";
+import { deleteFiles, deleteFolders } from "~/server/actions";
 import type { files_table, folders_table } from "~/server/db/schema";
 import { toast } from "sonner";
 
@@ -46,7 +46,7 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
             });
 
             try {
-              await deleteFile(file.id);
+              await deleteFiles([file.id]);
               toast.dismiss(toastId);
               toast.success('File "' + fileName + '" deleted successfully');
             } catch (error) {
@@ -106,7 +106,7 @@ export function FolderRow(props: {
             });
 
             try {
-              await deleteFolder(folder.id);
+              await deleteFolders([folder.id]);
               toast.dismiss(toastId);
               toast.success('Folder "' + folderName + '" deleted successfully');
             } catch (error) {

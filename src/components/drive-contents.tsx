@@ -14,7 +14,7 @@ export default function DriveContents(props: {
 }) {
   return (
     <div className="flex min-h-screen flex-row items-start justify-center gap-6 pl-2 pt-6 text-gray-100">
-      <nav className="flex h-[94vh] min-w-[12vw] flex-col items-center justify-between rounded-lg border border-l-0 border-gray-600 bg-neutral-900 px-4 py-2 shadow-xl">
+      <nav className="flex h-[94vh] w-[13vw] flex-col items-center justify-between rounded-lg border border-l-0 border-gray-600 bg-neutral-900 px-4 py-2 shadow-xl">
         <div className="mt-2 flex flex-col items-start gap-2">
           <CreateFolderButton
             parent={props.currentFolderId}

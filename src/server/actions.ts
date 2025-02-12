@@ -10,108 +10,139 @@ import { redirect } from "next/navigation";
 import { MUTATIONS } from "./db/queries";
 
 const utApi = new UTApi();
-export async function deleteFile(fileId: number) {
-  const session = await auth();
 
+export async function deleteFiles(filesIds: number[]) {
+  const session = await auth();
   if (!session.userId) return redirect("/sign-in");
 
-  const [file] = await db
-    .select()
-    .from(files_table)
-    .where(
-      and(eq(files_table.id, fileId), eq(files_table.ownerId, session.userId)),
-    );
+  return await db.transaction(async (tx) => {
+    const files = await tx
+      .select()
+      .from(files_table)
+      .where(
+        and(
+          inArray(files_table.id, filesIds),
+          eq(files_table.ownerId, session.userId),
+        ),
+      );
 
-  if (!file) {
-    throw new Error("File not found");
-  }
+    if (files.length !== filesIds.length)
+      throw new Error("One or more files not found");
 
-  if (file.ownerId !== session.userId) {
-    throw new Error("Unauthorized");
-  }
+    try {
+      const utapiResult = await utApi.deleteFiles(
+        files.map((file) => file.utKey),
+      );
+      console.log("utapiResult : ", utapiResult);
 
-  const utapiResult = await utApi.deleteFiles([file.utKey]);
+      const databaseResult = await tx
+        .delete(files_table)
+        .where(inArray(files_table.id, filesIds));
+      console.log("databaseResult : ", databaseResult);
 
-  console.log("utapiResult : ", utapiResult);
+      const c = await cookies();
+      c.set("force-refresh", JSON.stringify(Math.random()));
 
-  const databaseResult = await db
-    .delete(files_table)
-    .where(eq(files_table.id, fileId));
-
-  console.log("databaseResult : ", databaseResult);
-
-  const c = await cookies();
-
-  c.set("force-refresh", JSON.stringify(Math.random()));
-
-  return { success: true };
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting files:", error);
+      throw new Error("Failed to delete files");
+    }
+  });
 }
 
-export async function deleteFolder(folderId: number) {
+export async function deleteFolders(foldersIds: number[]) {
   const session = await auth();
-
   if (!session.userId) return redirect("/sign-in");
 
-  const [folder] = await db
-    .select()
-    .from(folders_table)
-    .where(
-      and(
-        eq(folders_table.id, folderId),
-        eq(folders_table.ownerId, session.userId),
-      ),
-    );
+  return await db.transaction(async (tx) => {
+    // get selected folders to delete
+    const folders = await tx
+      .select()
+      .from(folders_table)
+      .where(
+        and(
+          inArray(folders_table.id, foldersIds),
+          eq(folders_table.ownerId, session.userId),
+        ),
+      );
 
-  if (!folder) {
-    throw new Error("Folder not found");
-  }
+    if (folders.length !== foldersIds.length)
+      throw new Error("One or more folders not found");
 
-  if (folder.parent === null) {
-    throw new Error("Cannot delete root folder");
-  }
+    if (folders.some((folder) => folder.parent === null))
+      throw new Error("Cannot delete root folder");
 
-  if (folder.ownerId !== session.userId) {
-    throw new Error("Unauthorized");
-  }
+    try {
+      // get all child folders recursively
+      const allChildFoldersRecursive = [...folders];
+      let childFoldersIds = foldersIds;
+      do {
+        const childFolders = await tx
+          .select()
+          .from(folders_table)
+          .where(
+            and(
+              inArray(folders_table.parent, childFoldersIds),
+              eq(folders_table.ownerId, session.userId),
+            ),
+          );
 
-  const childrenFiles = await db
+        allChildFoldersRecursive.push(...childFolders);
+        childFoldersIds = childFolders.map((folder) => folder.id);
+      } while (childFoldersIds.length > 0);
+
+      const newFoldersIds = allChildFoldersRecursive.map((folder) => folder.id);
+
+      const allChildFiles = await getChildFiles(
+        tx,
+        newFoldersIds,
+        session.userId,
+      );
+
+      if (allChildFiles.length > 0) {
+        const utapiResult = await utApi.deleteFiles(
+          allChildFiles.map((file) => file.utKey),
+        );
+        console.log("utapiResult : ", utapiResult);
+
+        await tx.delete(files_table).where(
+          inArray(
+            files_table.id,
+            allChildFiles.map((file) => file.id),
+          ),
+        );
+      }
+
+      await tx
+        .delete(folders_table)
+        .where(inArray(folders_table.id, newFoldersIds));
+
+      const c = await cookies();
+      c.set("force-refresh", JSON.stringify(Math.random()));
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting folders:", error);
+      throw new Error("Failed to delete folders");
+    }
+  });
+}
+
+function getChildFiles(
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
+  folderIds: number[],
+  userId: string,
+) {
+  return tx
     .select()
     .from(files_table)
-    .where(eq(files_table.parent, folderId));
-
-  if (childrenFiles.length > 0) {
-    const utapiResult = await utApi.deleteFiles(
-      childrenFiles.map((file) => file.utKey),
-    );
-    console.log("utapiResult : ", utapiResult);
-
-    const databaseResult = await db.delete(files_table).where(
-      inArray(
-        files_table.id,
-        childrenFiles.map((file) => file.id),
+    .where(
+      and(
+        inArray(files_table.parent, folderIds),
+        eq(files_table.ownerId, userId),
       ),
     );
-    console.log("databaseResult : ", databaseResult);
-  }
-
-  const childrenFolders = await db
-    .select()
-    .from(folders_table)
-    .where(eq(folders_table.parent, folderId));
-  await Promise.all(
-    childrenFolders.map(async (folder) => await deleteFolder(folder.id)),
-  );
-
-  const databaseResult = await db
-    .delete(folders_table)
-    .where(eq(folders_table.id, folderId));
-  console.log("databaseResult : ", databaseResult);
-
-  const c = await cookies();
-
-  c.set("force-refresh", JSON.stringify(Math.random()));
-
-  return { success: true };
 }
 
 export async function redirectToDrive() {
