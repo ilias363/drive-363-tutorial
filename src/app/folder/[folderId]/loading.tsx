@@ -12,7 +12,7 @@ export default function FolderLoading() {
         </div>
       </nav>
 
-      <div className="mx-auto flex-1">
+      <div className="mx-auto flex-1 pt-2">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center pl-4">
             <div className="h-4 w-20 animate-pulse rounded bg-gray-700" />
@@ -44,25 +44,25 @@ export default function FolderLoading() {
             <tbody>
               {Array.from({ length: 4 }).map((_, index) => (
                 <tr key={index} className="border-b border-gray-700">
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-6">
                     <div className="flex items-center">
                       <div className="h-4 w-4 animate-pulse rounded bg-gray-700" />
                       <div className="ml-3 h-4 w-32 animate-pulse rounded bg-gray-700" />
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-6">
                     <div className="flex justify-center">
                       <div className="h-4 w-24 animate-pulse rounded bg-gray-700" />
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-6">
                     <div className="flex justify-center">
                       <div className="h-4 w-16 animate-pulse rounded bg-gray-700" />
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-6">
                     <div className="flex justify-center">
-                      <div className="h-6 w-6 animate-pulse rounded bg-gray-700" />
+                      <div className="h-1 w-4 animate-pulse rounded bg-gray-700" />
                     </div>
                   </td>
                 </tr>

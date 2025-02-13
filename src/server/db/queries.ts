@@ -70,20 +70,38 @@ export const MUTATIONS = {
     };
     userId: string;
   }) {
-    input.folder.name = input.folder.name.trim();
+    const names = input.folder.name
+      .split("/")
+      .map((name) => name.trim())
+      .filter((name) => name !== "");
+
+    if (names.length === 0) throw new Error("Invalid folder name");
 
     const existingFolders = await db
       .select()
       .from(foldersSchema)
-      .where(eq(foldersSchema.name, input.folder.name));
+      .where(
+        and(
+          eq(foldersSchema.name, names[0]!),
+          eq(foldersSchema.parent, input.folder.parent),
+        ),
+      );
 
     if (existingFolders.length > 0)
-      throw new Error(`Folder name "${input.folder.name}" already exists`);
+      throw new Error(`Folder name "${names[0]}" already exists`);
 
-    return await db.insert(foldersSchema).values({
-      ...input.folder,
-      ownerId: input.userId,
-    });
+    const createdFoldersIds: number[] = [];
+    for (const name of names) {
+      const folder = await db.insert(foldersSchema).values({
+        name: name,
+        parent: input.folder.parent,
+        ownerId: input.userId,
+      });
+      input.folder.parent = folder[0].insertId;
+      createdFoldersIds.push(folder[0].insertId);
+    }
+
+    return createdFoldersIds;
   },
 
   createFile: async function (input: {

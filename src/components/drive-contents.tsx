@@ -26,7 +26,7 @@ export default function DriveContents(props: {
         </div>
       </nav>
 
-      <div className="mx-auto max-h-[94vh] flex-1 overflow-y-auto pr-8">
+      <div className="mx-auto max-h-[94vh] flex-1 overflow-y-auto pr-8 pt-2">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center pl-4">
             <Link
@@ -49,7 +49,7 @@ export default function DriveContents(props: {
                 </div>
               ))}
           </div>
-          <div>
+          <div className="flex h-8 w-8 items-center justify-center">
             <SignedOut>
               <SignInButton />
             </SignedOut>
