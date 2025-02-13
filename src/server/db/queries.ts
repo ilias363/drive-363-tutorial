@@ -70,6 +70,16 @@ export const MUTATIONS = {
     };
     userId: string;
   }) {
+    input.folder.name = input.folder.name.trim();
+
+    const existingFolders = await db
+      .select()
+      .from(foldersSchema)
+      .where(eq(foldersSchema.name, input.folder.name));
+
+    if (existingFolders.length > 0)
+      throw new Error(`Folder name "${input.folder.name}" already exists`);
+
     return await db.insert(foldersSchema).values({
       ...input.folder,
       ownerId: input.userId,
