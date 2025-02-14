@@ -13,8 +13,13 @@ import { toast } from "sonner";
 import { ActionsDropdown } from "./actions-dropdown";
 import { useState } from "react";
 import { RenameDialog } from "./rename-dialog";
+import { Checkbox } from "~/components/ui/checkbox";
 
-export function FileRow(props: { file: typeof files_table.$inferSelect }) {
+export function FileRow(props: {
+  file: typeof files_table.$inferSelect;
+  isSelected: boolean;
+  onToggle: (folderId: number) => void;
+}) {
   const { file } = props;
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
 
@@ -68,7 +73,13 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
   return (
     <>
       <tr className="border-b border-gray-700 hover:bg-black/30">
-        <td className="px-6 py-4">
+        <td className="py-4 text-center">
+          <Checkbox
+            checked={props.isSelected}
+            onCheckedChange={() => props.onToggle(file.id)}
+          />
+        </td>
+        <td className="px-2 py-4">
           <a
             href={file.url ?? "#"}
             className="flex items-center text-gray-100 hover:text-blue-400"
@@ -78,7 +89,7 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
             {file.name}
           </a>
         </td>
-        <td className="px-6 py-4 text-center text-gray-400">
+        <td className="px-2 py-4 text-center text-gray-400">
           {file.createdAt.toLocaleString("en-US", {
             year: "numeric",
             month: "short",
@@ -87,8 +98,8 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
             minute: "2-digit",
           })}
         </td>
-        <td className="px-6 py-4 text-center text-gray-400">{file.size}</td>
-        <td className="px-6 py-4 text-center text-gray-400">
+        <td className="px-2 py-4 text-center text-gray-400">{file.size}</td>
+        <td className="px-2 py-4 text-center text-gray-400">
           <ActionsDropdown
             onRename={onRename}
             onMove={onMove}
@@ -108,6 +119,8 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
 
 export function FolderRow(props: {
   folder: typeof folders_table.$inferSelect;
+  isSelected: boolean;
+  onToggle: (folderId: number) => void;
 }) {
   const { folder } = props;
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
@@ -164,7 +177,13 @@ export function FolderRow(props: {
   return (
     <>
       <tr className="border-b border-gray-700 hover:bg-black/30">
-        <td className="px-6 py-4">
+        <td className="py-4 text-center">
+          <Checkbox
+            checked={props.isSelected}
+            onCheckedChange={() => props.onToggle(folder.id)}
+          />
+        </td>
+        <td className="px-2 py-4">
           <Link
             href={`/folder/${folder.id}`}
             className="flex items-center text-gray-100 hover:text-blue-400"
@@ -173,7 +192,7 @@ export function FolderRow(props: {
             {folder.name}
           </Link>
         </td>
-        <td className="px-6 py-4 text-center text-gray-400">
+        <td className="px-2 py-4 text-center text-gray-400">
           {folder.createdAt.toLocaleString("en-US", {
             year: "numeric",
             month: "short",
@@ -182,8 +201,8 @@ export function FolderRow(props: {
             minute: "2-digit",
           })}
         </td>
-        <td className="px-6 py-4 text-center text-gray-400">--</td>
-        <td className="px-6 py-4 text-center text-gray-400">
+        <td className="px-2 py-4 text-center text-gray-400">--</td>
+        <td className="px-2 py-4 text-center text-gray-400">
           <ActionsDropdown
             onRename={onRename}
             onMove={onMove}

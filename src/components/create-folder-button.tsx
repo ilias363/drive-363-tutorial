@@ -1,5 +1,3 @@
-"use client";
-
 import { FolderPlus } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -25,7 +23,7 @@ export default function CreateFolderButton(props: {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="text-md flex w-full flex-row items-center justify-start gap-2 bg-transparent px-2 py-5 font-medium text-white hover:bg-neutral-800">
+        <Button className="text-md flex w-full flex-row items-center justify-start gap-2 bg-slate-300 px-2 py-5 font-medium hover:bg-slate-300/85">
           <FolderPlus className="h-5 w-5" />
           {" Create Folder"}
         </Button>
@@ -70,6 +68,11 @@ export default function CreateFolderButton(props: {
             />
           </div>
           <DialogFooter>
+            <p className="col-span-4 text-sm text-gray-500">
+              {
+                "Note: You can create nested folders by using slashes (e.g., 'folder 1/folder 2')."
+              }
+            </p>
             <Button type="submit">Create</Button>
           </DialogFooter>
         </form>

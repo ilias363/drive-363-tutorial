@@ -12,6 +12,8 @@ import { MUTATIONS } from "./db/queries";
 const utApi = new UTApi();
 
 export async function deleteFiles(filesIds: number[]) {
+  if (filesIds.length === 0) return { success: true };
+
   const session = await auth();
   if (!session.userId) return redirect("/sign-in");
 
@@ -52,6 +54,8 @@ export async function deleteFiles(filesIds: number[]) {
 }
 
 export async function deleteFolders(foldersIds: number[]) {
+  if (foldersIds.length === 0) return { success: true };
+
   const session = await auth();
   if (!session.userId) return redirect("/sign-in");
 
