@@ -159,11 +159,27 @@ export const MUTATIONS = {
     return rootFolderId;
   },
 
-  renameFolder: async function (folderId: number, newName: string) {
+  renameFolder: async function (
+    folder: typeof foldersSchema.$inferSelect,
+    newName: string,
+  ) {
+    const existingFolders = await db
+      .select()
+      .from(foldersSchema)
+      .where(
+        and(
+          eq(foldersSchema.name, newName),
+          eq(foldersSchema.parent, folder.parent!),
+        ),
+      );
+
+    if (existingFolders.length > 0)
+      throw new Error(`Folder name "${newName}" already exists`);
+
     return await db
       .update(foldersSchema)
       .set({ name: newName })
-      .where(eq(foldersSchema.id, folderId));
+      .where(eq(foldersSchema.id, folder.id));
   },
 
   renameFile: async function (fileId: number, newName: string) {

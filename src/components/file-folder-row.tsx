@@ -119,7 +119,7 @@ export function FolderRow(props: {
     });
 
     try {
-      await renameFolder(folder.id, newName);
+      await renameFolder(folder, newName);
       toast.dismiss(toastId);
       toast.success(
         `Folder "${folder.name}" renamed to "${newName}" successfully`,

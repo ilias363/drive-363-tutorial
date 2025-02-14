@@ -183,12 +183,17 @@ export async function createFolder(input: {
   return { success: true };
 }
 
-export async function renameFolder(folderId: number, newName: string) {
-  await MUTATIONS.renameFolder(folderId, newName);
+export async function renameFolder(
+  folder: typeof folders_table.$inferSelect,
+  newName: string,
+) {
+  if (folder.name !== newName.trim()) {
+    await MUTATIONS.renameFolder(folder, newName.trim());
 
-  const c = await cookies();
+    const c = await cookies();
 
-  c.set("force-refresh", JSON.stringify(Math.random()));
+    c.set("force-refresh", JSON.stringify(Math.random()));
+  }
 
   return { success: true };
 }
