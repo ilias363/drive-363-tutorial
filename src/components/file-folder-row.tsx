@@ -32,7 +32,7 @@ export function FileRow(props: {
     });
 
     try {
-      await renameFile(file.id, newName);
+      await renameFile(file, newName);
       toast.dismiss(toastId);
       toast.success(`File "${file.name}" renamed to "${newName}" successfully`);
     } catch (error) {

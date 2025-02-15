@@ -61,7 +61,7 @@ export const QUERIES = {
     return folder[0];
   },
 
-  getAllFoldersForCurrentUser: async function (userId: string) {
+  getAllFoldersForUser: async function (userId: string) {
     return await db
       .select()
       .from(foldersSchema)
@@ -85,7 +85,7 @@ export const MUTATIONS = {
     if (names.length === 0) throw new Error("Invalid folder name");
 
     const existingFolders = await db
-      .select()
+      .select({ name: foldersSchema.name })
       .from(foldersSchema)
       .where(
         and(
@@ -121,6 +121,25 @@ export const MUTATIONS = {
     };
     userId: string;
   }) {
+    const existingFiles = await db
+      .select({ name: filesSchema.name })
+      .from(filesSchema)
+      .where(and(eq(filesSchema.parent, input.file.parent)));
+
+    let newName = input.file.name;
+    let i = 1;
+    const extension = newName.split(".").pop();
+    const baseName = extension
+      ? newName.slice(0, -(extension.length + 1))
+      : newName;
+
+    while (existingFiles.some((file) => file.name === newName)) {
+      newName = `${baseName} (${i})${extension ? "." + extension : ""}`;
+      i++;
+    }
+
+    input.file.name = newName;
+
     return await db.insert(filesSchema).values({
       ...input.file,
       ownerId: input.userId,
@@ -171,7 +190,7 @@ export const MUTATIONS = {
     newName: string,
   ) {
     const existingFolders = await db
-      .select()
+      .select({ name: foldersSchema.name })
       .from(foldersSchema)
       .where(
         and(
@@ -189,11 +208,22 @@ export const MUTATIONS = {
       .where(eq(foldersSchema.id, folder.id));
   },
 
-  renameFile: async function (fileId: number, newName: string) {
+  renameFile: async function (
+    file: typeof filesSchema.$inferSelect,
+    newName: string,
+  ) {
+    const existingFiles = await db
+      .select({ name: filesSchema.name })
+      .from(filesSchema)
+      .where(and(eq(filesSchema.parent, file.parent)));
+
+    if (existingFiles.length > 0)
+      throw new Error(`File name "${newName}" already exists`);
+
     return await db
       .update(filesSchema)
       .set({ name: newName })
-      .where(eq(filesSchema.id, fileId));
+      .where(eq(filesSchema.id, file.id));
   },
 
   moveFoldersAndFiles: async function (

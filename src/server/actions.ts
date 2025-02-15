@@ -202,8 +202,11 @@ export async function renameFolder(
   return { success: true };
 }
 
-export async function renameFile(fileId: number, newName: string) {
-  await MUTATIONS.renameFile(fileId, newName);
+export async function renameFile(
+  file: typeof files_table.$inferSelect,
+  newName: string,
+) {
+  await MUTATIONS.renameFile(file, newName);
 
   const c = await cookies();
 
@@ -212,11 +215,11 @@ export async function renameFile(fileId: number, newName: string) {
   return { success: true };
 }
 
-export async function getAllFoldersForUser() {
+export async function getAllFoldersForCurrentUser() {
   const session = await auth();
   if (!session.userId) return redirect("/sign-in");
 
-  const allFolders = await QUERIES.getAllFoldersForCurrentUser(session.userId);
+  const allFolders = await QUERIES.getAllFoldersForUser(session.userId);
 
   return allFolders;
 }

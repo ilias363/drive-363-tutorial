@@ -9,7 +9,10 @@ import {
 } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import type { folders_table } from "~/server/db/schema";
-import { getAllFoldersForUser, moveFoldersAndFiles } from "~/server/actions";
+import {
+  getAllFoldersForCurrentUser,
+  moveFoldersAndFiles,
+} from "~/server/actions";
 import FolderStructure from "./folder-structure";
 import { toast } from "sonner";
 
@@ -69,7 +72,7 @@ export default function MoveDialog(props: {
 
   useEffect(() => {
     const fetchFolders = async () => {
-      const allFoldersForUser = await getAllFoldersForUser();
+      const allFoldersForUser = await getAllFoldersForCurrentUser();
       setAllFolders(allFoldersForUser);
     };
 
