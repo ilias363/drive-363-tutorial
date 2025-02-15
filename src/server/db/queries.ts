@@ -5,7 +5,7 @@ import {
   files_table as filesSchema,
   folders_table as foldersSchema,
 } from "~/server/db/schema";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 
 export const QUERIES = {
   getFolders: function (folderId: number) {
@@ -24,7 +24,7 @@ export const QUERIES = {
       .orderBy(filesSchema.id);
   },
 
-  getAllParentsForFolder: async function (folderId: number) {
+  getRecursiveParentsForFolder: async function (folderId: number) {
     const parents = [];
 
     let currentId: number | null = folderId;
@@ -59,6 +59,13 @@ export const QUERIES = {
         and(eq(foldersSchema.ownerId, userId), isNull(foldersSchema.parent)),
       );
     return folder[0];
+  },
+
+  getAllFoldersForCurrentUser: async function (userId: string) {
+    return await db
+      .select()
+      .from(foldersSchema)
+      .where(eq(foldersSchema.ownerId, userId));
   },
 };
 
@@ -187,5 +194,28 @@ export const MUTATIONS = {
       .update(filesSchema)
       .set({ name: newName })
       .where(eq(filesSchema.id, fileId));
+  },
+
+  moveFoldersAndFiles: async function (
+    newParentId: number,
+    foldersIds: number[],
+    filesIds: number[],
+  ) {
+    const promises = [];
+    if (foldersIds.length > 0)
+      promises.push(
+        db
+          .update(foldersSchema)
+          .set({ parent: newParentId })
+          .where(inArray(foldersSchema.id, foldersIds)),
+      );
+    if (filesIds.length > 0)
+      promises.push(
+        db
+          .update(filesSchema)
+          .set({ parent: newParentId })
+          .where(inArray(filesSchema.id, filesIds)),
+      );
+    return await Promise.all(promises);
   },
 };

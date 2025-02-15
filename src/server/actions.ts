@@ -7,7 +7,7 @@ import { files_table, folders_table } from "./db/schema";
 import { UTApi } from "uploadthing/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { MUTATIONS } from "./db/queries";
+import { MUTATIONS, QUERIES } from "./db/queries";
 
 const utApi = new UTApi();
 
@@ -204,6 +204,36 @@ export async function renameFolder(
 
 export async function renameFile(fileId: number, newName: string) {
   await MUTATIONS.renameFile(fileId, newName);
+
+  const c = await cookies();
+
+  c.set("force-refresh", JSON.stringify(Math.random()));
+
+  return { success: true };
+}
+
+export async function getAllFoldersForUser() {
+  const session = await auth();
+  if (!session.userId) return redirect("/sign-in");
+
+  const allFolders = await QUERIES.getAllFoldersForCurrentUser(session.userId);
+
+  return allFolders;
+}
+
+export async function moveFoldersAndFiles(
+  newParentId: number,
+  foldersIds?: number[],
+  filesIds?: number[],
+) {
+  const session = await auth();
+  if (!session.userId) return redirect("/sign-in");
+
+  await MUTATIONS.moveFoldersAndFiles(
+    newParentId,
+    foldersIds ?? [],
+    filesIds ?? [],
+  );
 
   const c = await cookies();
 

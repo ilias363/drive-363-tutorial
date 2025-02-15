@@ -57,6 +57,7 @@ export default function DriveContents(props: {
             userId={props.parents[0]!.ownerId}
           />
           <EditSelectedButton
+            currentParentId={props.currentFolderId}
             setSelectedFolders={setSelectedFolders}
             setSelectedFiles={setSelectedFiles}
             selectedFoldersIds={selectedFolders}
@@ -107,7 +108,8 @@ export default function DriveContents(props: {
                   <Checkbox
                     checked={
                       selectedFolders.length + selectedFiles.length ===
-                      props.folders.length + props.files.length
+                        props.folders.length + props.files.length &&
+                      props.folders.length + props.files.length !== 0
                     }
                     onCheckedChange={toggleAll}
                   />

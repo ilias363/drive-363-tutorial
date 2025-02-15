@@ -14,14 +14,16 @@ import { ActionsDropdown } from "./actions-dropdown";
 import { useState } from "react";
 import { RenameDialog } from "./rename-dialog";
 import { Checkbox } from "~/components/ui/checkbox";
+import MoveDialog from "./move-dialog";
 
 export function FileRow(props: {
   file: typeof files_table.$inferSelect;
   isSelected: boolean;
-  onToggle: (folderId: number) => void;
+  onToggle: (fileId: number) => void;
 }) {
   const { file } = props;
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
 
   const handleRename = async (newName: string) => {
     const toastId = `rename-file-${file.id}`;
@@ -42,11 +44,12 @@ export function FileRow(props: {
     }
   };
 
-  const onRename = () => {
-    setRenameDialogOpen(true);
-  };
+  const onRename = () => setRenameDialogOpen(true);
 
-  const onMove = () => 1;
+  const onMove = () => {
+    if (props.isSelected) props.onToggle(file.id);
+    setMoveDialogOpen(true);
+  };
 
   const handleDelete = async () => {
     const fileName =
@@ -113,6 +116,13 @@ export function FileRow(props: {
         initialName={file.name}
         onRename={handleRename}
       />
+      <MoveDialog
+        currentParentId={file.parent}
+        setIsMoveDialogOpen={setMoveDialogOpen}
+        isMoveDialogOpen={moveDialogOpen}
+        toMoveFoldersIds={[]}
+        toMoveFilesIds={[file.id]}
+      />
     </>
   );
 }
@@ -124,6 +134,7 @@ export function FolderRow(props: {
 }) {
   const { folder } = props;
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
 
   const handleRename = async (newName: string) => {
     const toastId = `rename-folder-${folder.id}`;
@@ -146,11 +157,12 @@ export function FolderRow(props: {
     }
   };
 
-  const onRename = () => {
-    setRenameDialogOpen(true);
-  };
+  const onRename = () => setRenameDialogOpen(true);
 
-  const onMove = () => 1;
+  const onMove = () => {
+    if (props.isSelected) props.onToggle(folder.id);
+    setMoveDialogOpen(true);
+  };
 
   const handleDelete = async () => {
     const folderName =
@@ -215,6 +227,13 @@ export function FolderRow(props: {
         onOpenChange={setRenameDialogOpen}
         initialName={folder.name}
         onRename={handleRename}
+      />
+      <MoveDialog
+        currentParentId={folder.parent!}
+        setIsMoveDialogOpen={setMoveDialogOpen}
+        isMoveDialogOpen={moveDialogOpen}
+        toMoveFoldersIds={[folder.id]}
+        toMoveFilesIds={[]}
       />
     </>
   );
