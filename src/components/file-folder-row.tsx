@@ -101,7 +101,18 @@ export function FileRow(props: {
             minute: "2-digit",
           })}
         </td>
-        <td className="px-2 py-4 text-center text-gray-400">{file.size}</td>
+        <td className="px-2 py-4 text-center text-gray-400">
+          {(() => {
+            const size = file.size;
+            if (size < 1024) return `${size} Bytes`;
+
+            if (size < 1024 ** 2) return `${(size / 1024).toFixed(1)} KB`;
+
+            if (size < 1024 ** 3) return `${(size / 1024 ** 2).toFixed(1)} MB`;
+
+            return `${(size / 1024 ** 3).toFixed(1)} GB`;
+          })()}
+        </td>
         <td className="px-2 py-4 text-center text-gray-400">
           <ActionsDropdown
             onRename={onRename}
@@ -213,7 +224,7 @@ export function FolderRow(props: {
             minute: "2-digit",
           })}
         </td>
-        <td className="px-2 py-4 text-center text-gray-400">--</td>
+        <td className="px-2 py-4 text-center text-gray-400"></td>
         <td className="px-2 py-4 text-center text-gray-400">
           <ActionsDropdown
             onRename={onRename}
