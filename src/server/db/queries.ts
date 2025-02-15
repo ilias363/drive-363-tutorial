@@ -8,7 +8,7 @@ import {
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 export const QUERIES = {
-  getFolders: function (folderId: number) {
+  getFoldersByParent: function (folderId: number) {
     return db
       .select()
       .from(foldersSchema)
@@ -16,7 +16,7 @@ export const QUERIES = {
       .orderBy(foldersSchema.id);
   },
 
-  getFiles: function (folderId: number) {
+  getFilesByParent: function (folderId: number) {
     return db
       .select()
       .from(filesSchema)
@@ -49,6 +49,30 @@ export const QUERIES = {
       .from(foldersSchema)
       .where(eq(foldersSchema.id, folderId));
     return folder[0];
+  },
+
+  getFileById: async function (fileId: number) {
+    const file = await db
+      .select()
+      .from(filesSchema)
+      .where(eq(filesSchema.id, fileId));
+    return file[0];
+  },
+
+  getFoldersByIds: async function (foldersIds: number[]) {
+    const folders = await db
+      .select()
+      .from(foldersSchema)
+      .where(inArray(foldersSchema.id, foldersIds));
+    return folders;
+  },
+
+  getFilesByIds: async function (filesIds: number[]) {
+    const files = await db
+      .select()
+      .from(filesSchema)
+      .where(inArray(filesSchema.id, filesIds));
+    return files;
   },
 
   getRootFolerForUser: async function (userId: string) {

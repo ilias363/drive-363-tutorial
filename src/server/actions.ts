@@ -226,21 +226,46 @@ export async function getAllFoldersForCurrentUser() {
 
 export async function moveFoldersAndFiles(
   newParentId: number,
-  foldersIds?: number[],
-  filesIds?: number[],
+  foldersIds: number[] = [],
+  filesIds: number[] = [],
 ) {
   const session = await auth();
   if (!session.userId) return redirect("/sign-in");
 
+  const existingFoldersPromise = QUERIES.getFoldersByParent(newParentId);
+  const existingFilesPromise = QUERIES.getFilesByParent(newParentId);
+  const foldersPromise = QUERIES.getFoldersByIds(foldersIds);
+  const filesPromise = QUERIES.getFilesByIds(filesIds);
+
+  const [existingFolders, existingFiles, folders, files] = await Promise.all([
+    existingFoldersPromise,
+    existingFilesPromise,
+    foldersPromise,
+    filesPromise,
+  ]);
+
+  const existingFoldersNames = existingFolders.map((folder) => folder.name);
+  const existingFilesNames = existingFiles.map((file) => file.name);
+
+  const conflictFoldersIds = folders
+    .filter((folder) => existingFoldersNames.includes(folder.name))
+    .map((folder) => folder.id);
+  const conflictFilesIds = files
+    .filter((file) => existingFilesNames.includes(file.name))
+    .map((file) => file.id);
+
   await MUTATIONS.moveFoldersAndFiles(
     newParentId,
-    foldersIds ?? [],
-    filesIds ?? [],
+    foldersIds.filter((id) => !conflictFoldersIds.includes(id)),
+    filesIds.filter((id) => !conflictFilesIds.includes(id)),
   );
 
   const c = await cookies();
 
   c.set("force-refresh", JSON.stringify(Math.random()));
+
+  if (conflictFoldersIds.length * conflictFilesIds.length !== 0)
+    throw new Error("Error moving some data because of name conflicts");
 
   return { success: true };
 }
