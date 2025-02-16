@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { deleteFiles, deleteFolders } from "~/server/actions";
 import MoveDialog from "./move-dialog";
+import DeleteConfirmationDialog from "./delete-confirmation-dialog";
 
 export function EditSelectedButton(props: {
   currentParentId: number;
@@ -22,6 +23,7 @@ export function EditSelectedButton(props: {
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 
   const deleteSelectedItems = async () => {
     setIsDialogOpen(false);
@@ -96,7 +98,10 @@ export function EditSelectedButton(props: {
               Cancel
             </Button>
             <div className="space-x-2">
-              <Button variant="destructive" onClick={deleteSelectedItems}>
+              <Button
+                variant="destructive"
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
                 Delete
               </Button>
               <Button onClick={moveSelectedItems}>Move</Button>
@@ -112,6 +117,11 @@ export function EditSelectedButton(props: {
         isMoveDialogOpen={isMoveDialogOpen}
         toMoveFoldersIds={props.selectedFoldersIds}
         toMoveFilesIds={props.selectedFilesIds}
+      />
+      <DeleteConfirmationDialog
+        isDeleteDialogOpen={isDeleteDialogOpen}
+        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+        onDelete={deleteSelectedItems}
       />
     </>
   );
