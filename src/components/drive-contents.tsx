@@ -100,7 +100,7 @@ export default function DriveContents(props: {
             </SignedIn>
           </div>
         </div>
-        <div className="rounded-lg bg-neutral-900/50 shadow-xl">
+        <div className="relative rounded-lg bg-neutral-900/50 shadow-xl">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-700">
