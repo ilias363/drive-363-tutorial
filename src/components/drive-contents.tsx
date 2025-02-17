@@ -68,30 +68,30 @@ export default function DriveContents(props: {
           <CustomUploadButton currentFolderId={props.currentFolderId} />
         </div>
       </nav>
-      <div className="mx-auto max-h-[94vh] flex-1 overflow-y-auto pr-8 pt-2">
+      <div className="mx-auto flex-1 pr-8">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center pl-4">
             <Link
               href={`/folder/${props.parents.find((parent) => parent.parent === null)?.id}`}
-              className="text-gray-300 hover:text-white"
+              className="font-semibold text-gray-300 hover:text-white"
             >
               My Drive
             </Link>
             {props.parents
               .filter((parent) => parent.parent)
               .map((folder) => (
-                <div key={folder.id} className="flex items-center">
-                  <ChevronRight className="mx-2 text-gray-500" size={16} />
+                <div key={folder.id} className="flex items-center space-x-1">
+                  <ChevronRight className="text-gray-500" size={16} />
                   <Link
                     href={`/folder/${folder.id}`}
-                    className="text-gray-300 hover:text-white"
+                    className="font-semibold text-gray-300 hover:text-white"
                   >
                     {folder.name}
                   </Link>
                 </div>
               ))}
           </div>
-          <div className="flex h-8 w-8 items-center justify-center">
+          <div className="ml-4 flex h-8 w-8 items-center justify-center">
             <SignedOut>
               <SignInButton />
             </SignedOut>
@@ -100,7 +100,7 @@ export default function DriveContents(props: {
             </SignedIn>
           </div>
         </div>
-        <div className="relative rounded-lg bg-neutral-900/50 shadow-xl">
+        <div className="relative max-h-[90vh] overflow-y-auto rounded-lg bg-neutral-900/50 shadow-xl">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-700">
