@@ -9,6 +9,7 @@ import CustomUploadButton from "./custom-upload-button";
 import CreateFolderButton from "./create-folder-button";
 import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
+import { ScrollArea } from "./ui/scroll-area";
 import { EditSelectedButton } from "./edit-selected-button";
 
 export default function DriveContents(props: {
@@ -100,7 +101,10 @@ export default function DriveContents(props: {
             </SignedIn>
           </div>
         </div>
-        <div className="relative max-h-[90vh] overflow-y-auto rounded-lg bg-neutral-900/50 shadow-xl">
+        <ScrollArea
+          style={{ height: "88vh" }}
+          className="relative rounded-lg bg-neutral-900/50 shadow-xl"
+        >
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-700">
@@ -145,7 +149,7 @@ export default function DriveContents(props: {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ export default function FolderLoading() {
             <div className="h-8 w-8 animate-pulse rounded-full bg-gray-700" />
           </div>
         </div>
-        <div className="rounded-lg bg-neutral-900/50 shadow-xl">
+        <div className="h-[88vh] rounded-lg bg-neutral-900/50 shadow-xl">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-700">
