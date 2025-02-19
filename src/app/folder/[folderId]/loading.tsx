@@ -15,7 +15,7 @@ export default function FolderLoading() {
 
       <div className="mx-auto flex-1 pr-8">
         <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center pl-4">
+          <div className="flex items-center py-2 pl-4">
             <div className="h-4 w-20 animate-pulse rounded bg-gray-700" />
             <div className="flex items-center space-x-1">
               <ChevronRight size={16} className="text-gray-500" />

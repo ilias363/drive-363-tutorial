@@ -9,7 +9,7 @@ import CustomUploadButton from "./custom-upload-button";
 import CreateFolderButton from "./create-folder-button";
 import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { EditSelectedButton } from "./edit-selected-button";
 
 export default function DriveContents(props: {
@@ -70,28 +70,31 @@ export default function DriveContents(props: {
         </div>
       </nav>
       <div className="mx-auto flex-1 pr-8">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center pl-4">
-            <Link
-              href={`/folder/${props.parents.find((parent) => parent.parent === null)?.id}`}
-              className="font-semibold text-gray-300 hover:text-white"
-            >
-              My Drive
-            </Link>
-            {props.parents
-              .filter((parent) => parent.parent)
-              .map((folder) => (
-                <div key={folder.id} className="flex items-center space-x-1">
-                  <ChevronRight className="text-gray-500" size={16} />
-                  <Link
-                    href={`/folder/${folder.id}`}
-                    className="font-semibold text-gray-300 hover:text-white"
-                  >
-                    {folder.name}
-                  </Link>
-                </div>
-              ))}
-          </div>
+        <div className="mb-2 flex items-center justify-between pl-3">
+          <ScrollArea className="w-[75vw] whitespace-nowrap py-2">
+            <div className="flex items-center px-1">
+              <Link
+                href={`/folder/${props.parents.find((parent) => parent.parent === null)?.id}`}
+                className="font-semibold text-gray-300 hover:text-white"
+              >
+                My Drive
+              </Link>
+              {props.parents
+                .filter((parent) => parent.parent)
+                .map((folder) => (
+                  <div key={folder.id} className="flex items-center space-x-1">
+                    <ChevronRight className="text-gray-500" size={16} />
+                    <Link
+                      href={`/folder/${folder.id}`}
+                      className="font-semibold text-gray-300 hover:text-white"
+                    >
+                      {folder.name}
+                    </Link>
+                  </div>
+                ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
           <div className="ml-4 flex h-8 w-8 items-center justify-center">
             <SignedOut>
               <SignInButton />
