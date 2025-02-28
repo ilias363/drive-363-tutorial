@@ -16,17 +16,16 @@ import DeleteConfirmationDialog from "./delete-confirmation-dialog";
 
 export function EditSelectedButton(props: {
   currentParentId: number;
-  setSelectedFolders: (ids: number[]) => void;
-  setSelectedFiles: (ids: number[]) => void;
   selectedFoldersIds: number[];
   selectedFilesIds: number[];
+  clearSelection: () => void;
 }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 
   const deleteSelectedItems = async () => {
-    setIsDialogOpen(false);
+    setIsActionDialogOpen(false);
 
     const toastId = `key-${Math.random()}`;
     toast.loading("Deleting selected files and folders", {
@@ -57,13 +56,12 @@ export function EditSelectedButton(props: {
         description: e instanceof Error ? e.message : "An error occured",
       });
     } finally {
-      props.setSelectedFolders([]);
-      props.setSelectedFiles([]);
+      props.clearSelection();
     }
   };
 
   const moveSelectedItems = () => {
-    setIsDialogOpen(false);
+    setIsActionDialogOpen(false);
     setIsMoveDialogOpen(true);
   };
 
@@ -71,7 +69,7 @@ export function EditSelectedButton(props: {
     <>
       <Button
         className="text-md flex w-full flex-row items-center justify-start gap-2 bg-slate-300 px-2 py-5 font-medium hover:bg-slate-300/85"
-        onClick={() => setIsDialogOpen(true)}
+        onClick={() => setIsActionDialogOpen(true)}
         disabled={
           props.selectedFoldersIds.length + props.selectedFilesIds.length === 0
         }
@@ -79,7 +77,7 @@ export function EditSelectedButton(props: {
         <SquareMousePointer className="h-5 w-5" />
         {"Edit Selected"}
       </Button>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isActionDialogOpen} onOpenChange={setIsActionDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Choose an action</DialogTitle>
@@ -92,7 +90,7 @@ export function EditSelectedButton(props: {
               variant="outline"
               onClick={() => {
                 console.log(props.selectedFilesIds, props.selectedFoldersIds);
-                setIsDialogOpen(false);
+                setIsActionDialogOpen(false);
               }}
             >
               Cancel
@@ -112,9 +110,8 @@ export function EditSelectedButton(props: {
       <MoveDialog
         currentParentId={props.currentParentId}
         setIsMoveDialogOpen={setIsMoveDialogOpen}
-        setToMoveFolders={props.setSelectedFolders}
-        setToMoveFiles={props.setSelectedFiles}
         isMoveDialogOpen={isMoveDialogOpen}
+        clearSelection={props.clearSelection}
         toMoveFoldersIds={props.selectedFoldersIds}
         toMoveFilesIds={props.selectedFilesIds}
       />

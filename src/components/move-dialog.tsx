@@ -19,9 +19,8 @@ import { toast } from "sonner";
 export default function MoveDialog(props: {
   currentParentId: number;
   setIsMoveDialogOpen: (open: boolean) => void;
-  setToMoveFolders?: (ids: number[]) => void;
-  setToMoveFiles?: (ids: number[]) => void;
   isMoveDialogOpen: boolean;
+  clearSelection?: () => void;
   toMoveFoldersIds: number[];
   toMoveFilesIds: number[];
 }) {
@@ -64,8 +63,7 @@ export default function MoveDialog(props: {
       });
     }
 
-    if (props.setToMoveFolders) props.setToMoveFolders([]);
-    if (props.setToMoveFiles) props.setToMoveFiles([]);
+    if (props.clearSelection) props.clearSelection();
 
     setSelectedDest(null);
   };

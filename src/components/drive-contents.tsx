@@ -7,10 +7,10 @@ import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import CustomUploadButton from "./custom-upload-button";
 import CreateFolderButton from "./create-folder-button";
-import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { EditSelectedButton } from "./edit-selected-button";
+import { useSelectionStore } from "~/stores";
 
 export default function DriveContents(props: {
   files: (typeof files_table.$inferSelect)[];
@@ -18,35 +18,20 @@ export default function DriveContents(props: {
   parents: (typeof folders_table.$inferSelect)[];
   currentFolderId: number;
 }) {
-  const [selectedFolders, setSelectedFolders] = useState<number[]>([]);
-  const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
+  const {
+    selectedFolders,
+    selectedFiles,
+    toggleFolder,
+    toggleFile,
+    toggleAll,
+    clearSelection,
+  } = useSelectionStore();
 
-  const toggleFolder = (folderId: number) => {
-    setSelectedFolders((prev) =>
-      prev.includes(folderId)
-        ? prev.filter((folder) => folder !== folderId)
-        : [...prev, folderId],
+  const handleToggleAll = () => {
+    toggleAll(
+      props.folders.map((folder) => folder.id),
+      props.files.map((file) => file.id),
     );
-  };
-  const toggleFile = (fileId: number) => {
-    setSelectedFiles((prev) =>
-      prev.includes(fileId)
-        ? prev.filter((file) => file !== fileId)
-        : [...prev, fileId],
-    );
-  };
-
-  const toggleAll = () => {
-    if (
-      selectedFolders.length + selectedFiles.length ===
-      props.folders.length + props.files.length
-    ) {
-      setSelectedFolders([]);
-      setSelectedFiles([]);
-    } else {
-      setSelectedFolders(props.folders.map((folder) => folder.id));
-      setSelectedFiles(props.files.map((file) => file.id));
-    }
   };
 
   return (
@@ -59,10 +44,9 @@ export default function DriveContents(props: {
           />
           <EditSelectedButton
             currentParentId={props.currentFolderId}
-            setSelectedFolders={setSelectedFolders}
-            setSelectedFiles={setSelectedFiles}
             selectedFoldersIds={selectedFolders}
             selectedFilesIds={selectedFiles}
+            clearSelection={clearSelection}
           />
         </div>
         <div className="my-4">
@@ -118,7 +102,7 @@ export default function DriveContents(props: {
                         props.folders.length + props.files.length &&
                       props.folders.length + props.files.length !== 0
                     }
-                    onCheckedChange={toggleAll}
+                    onCheckedChange={handleToggleAll}
                   />
                 </th>
                 <th className="px-2 py-4 text-left text-gray-400">Name</th>
