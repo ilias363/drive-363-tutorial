@@ -59,20 +59,18 @@ export const QUERIES = {
     return file[0];
   },
 
-  getFoldersByIds: async function (foldersIds: number[]) {
-    const folders = await db
+  getFoldersByIds: function (foldersIds: number[]) {
+    return db
       .select()
       .from(foldersSchema)
       .where(inArray(foldersSchema.id, foldersIds));
-    return folders;
   },
 
-  getFilesByIds: async function (filesIds: number[]) {
-    const files = await db
+  getFilesByIds: function (filesIds: number[]) {
+    return db
       .select()
       .from(filesSchema)
       .where(inArray(filesSchema.id, filesIds));
-    return files;
   },
 
   getRootFolerForUser: async function (userId: string) {
@@ -85,8 +83,8 @@ export const QUERIES = {
     return folder[0];
   },
 
-  getAllFoldersForUser: async function (userId: string) {
-    return await db
+  getAllFoldersForUser: function (userId: string) {
+    return db
       .select()
       .from(foldersSchema)
       .where(eq(foldersSchema.ownerId, userId));
@@ -164,7 +162,7 @@ export const MUTATIONS = {
 
     input.file.name = newName;
 
-    return await db.insert(filesSchema).values({
+    return db.insert(filesSchema).values({
       ...input.file,
       ownerId: input.userId,
     });
@@ -226,7 +224,7 @@ export const MUTATIONS = {
     if (existingFolders.length > 0)
       throw new Error(`Folder name "${newName}" already exists`);
 
-    return await db
+    return db
       .update(foldersSchema)
       .set({ name: newName })
       .where(eq(foldersSchema.id, folder.id));
@@ -239,12 +237,12 @@ export const MUTATIONS = {
     const existingFiles = await db
       .select({ name: filesSchema.name })
       .from(filesSchema)
-      .where(and(eq(filesSchema.parent, file.parent)));
+      .where(and(eq(filesSchema.parent, file.parent), eq(filesSchema.name, newName)));
 
     if (existingFiles.length > 0)
       throw new Error(`File name "${newName}" already exists`);
 
-    return await db
+    return db
       .update(filesSchema)
       .set({ name: newName })
       .where(eq(filesSchema.id, file.id));
@@ -270,6 +268,6 @@ export const MUTATIONS = {
           .set({ parent: newParentId })
           .where(inArray(filesSchema.id, filesIds)),
       );
-    return await Promise.all(promises);
+    return Promise.all(promises);
   },
 };
